@@ -1,8 +1,8 @@
 ﻿using System;
 using BeaconLibrary;
 using Android.App;
-using RadiusNetworks.IBeaconAndroid;
 using System.Collections.Generic;
+using RadiusNetworks.IBeaconAndroid;
 
 namespace FindTheMonkey.Droid
 {
