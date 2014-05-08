@@ -16,18 +16,18 @@ namespace BeaconTouch
 		MonoTouch.UIKit.UIView FullView { get; set; }
 
 		[Outlet]
-		MonoTouch.UIKit.UILabel InfoLabel { get; set; }
+		MonoTouch.UIKit.UITextView InfoText { get; set; }
 		
 		void ReleaseDesignerOutlets ()
 		{
-			if (InfoLabel != null) {
-				InfoLabel.Dispose ();
-				InfoLabel = null;
-			}
-
 			if (FullView != null) {
 				FullView.Dispose ();
 				FullView = null;
+			}
+
+			if (InfoText != null) {
+				InfoText.Dispose ();
+				InfoText = null;
 			}
 		}
 	}

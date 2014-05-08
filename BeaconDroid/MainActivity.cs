@@ -30,7 +30,7 @@ namespace FindTheMonkey.Droid
 			SetContentView(Resource.Layout.Main);
 
 			_view = FindViewById<RelativeLayout>(Resource.Id.findTheMonkeyView);
-			_text = FindViewById<TextView>(Resource.Id.monkeyStatusLabel);
+            _text = FindViewById<TextView>(Resource.Id.logTextView);
 
             var beaconManager = new BeaconManager(this);
 
@@ -40,7 +40,8 @@ namespace FindTheMonkey.Droid
 
 
             var beacon1 = DummyBeaconCreator.CreateBeaconUrsin();
-            indoorLocationController.AddBeaconsAndStart(new List<Beacon>{beacon1});
+            var beacon2 = DummyBeaconCreator.CreateBeaconMarcel();
+            indoorLocationController.AddBeaconsAndStart(new List<Beacon>{beacon1,beacon2});
 
             
             if (!IsBluetoothAvailable)
@@ -64,8 +65,16 @@ namespace FindTheMonkey.Droid
 		{
 			RunOnUiThread(() =>
 			{
-				_text.Text = message;
-				_view.SetBackgroundColor(color);
+                string formatedMessage = String.Format("{0}: {1}",DateTime.Now.ToString("T"),message) + System.Environment.NewLine;
+
+                if(_text.Text.Equals("There aren't any iBeacons nearby"))
+                {
+                    _text.Text = string.Empty;
+                }
+
+                _text.Text += formatedMessage;
+
+                _view.SetBackgroundColor(color);
 			});
 		}
 

@@ -51,6 +51,8 @@
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
     <MtouchDebug>true</MtouchDebug>
     <CodesignKey>iPhone Developer</CodesignKey>
+    <IpaPackageName>
+    </IpaPackageName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
     <DebugType>full</DebugType>
@@ -104,10 +106,6 @@
   <ItemGroup>
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
-    <Compile Include="BeaconTouchViewController.cs" />
-    <Compile Include="BeaconTouchViewController.designer.cs">
-      <DependentUpon>BeaconTouchViewController.cs</DependentUpon>
-    </Compile>
     <Compile Include="BeaconManager.cs" />
     <Compile Include="InfoViewController.cs" />
     <Compile Include="InfoViewController.designer.cs">
@@ -118,4 +116,10 @@
     <InterfaceDefinition Include="MainStoryboard.storyboard" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <ProjectReference Include="..\BeaconLibrary\BeaconLibrary.csproj">
+      <Project>{3219B949-C66A-42C2-B5ED-03058BF86A44}</Project>
+      <Name>BeaconLibrary</Name>
+    </ProjectReference>
+  </ItemGroup>
 </Project>

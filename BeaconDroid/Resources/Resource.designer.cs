@@ -67,7 +67,7 @@ namespace FindTheMonkey.Droid
 			public const int findTheMonkeyView = 2131034112;
 			
 			// aapt resource value: 0x7f050001
-			public const int monkeyStatusLabel = 2131034113;
+			public const int logTextView = 2131034113;
 			
 			static Id()
 			{

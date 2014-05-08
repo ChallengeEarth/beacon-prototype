@@ -11,48 +11,87 @@ namespace BeaconTouch
 
         public event Action<Beacon> ExitBeaconRegion;
 
-        CLLocationManager locationMgr;
+        CLLocationManager locationManager;
 
         public BeaconManager()
         {
-            locationMgr = new CLLocationManager ();
+            locationManager = new CLLocationManager ();
 
-            locationMgr.RegionEntered += HandleRegionEntered;
-            locationMgr.RegionLeft += HandleRegionLeft;
+            locationManager.RegionEntered += HandleRegionEntered;
+            locationManager.RegionLeft += HandleRegionLeft;
 
+            locationManager.DidStartMonitoringForRegion += HandleDidStartMonitoringForRegion;
+            locationManager.DidDetermineState += HandleDidDetermineState;
+        }
 
+        void HandleDidStartMonitoringForRegion (object sender, CLRegionEventArgs e)
+        {
+            locationManager.RequestState(e.Region);
+        }
+
+        void HandleDidDetermineState (object sender, CLRegionStateDeterminedEventArgs e)
+        {
+            Console.WriteLine("State for region {0} is {1}", e.Region.Identifier, e.State);
+
+            if (e.State == CLRegionState.Inside)
+            {
+                OnEnterRegion(e.Region);
+            }
+
+            if (e.State == CLRegionState.Outside)
+            {
+                OnExitRegion(e.Region);
+            }
         }
 
         void HandleRegionEntered (object sender, CLRegionEventArgs e)
         {
-            if (EnterBeaconRegion != null)
-            {
-                EnterBeaconRegion(RegionBeaconConverter.ConvertRegionToBeacon((CLBeaconRegion)e.Region));
-            }
+            Console.WriteLine("HandleRegionEntered");
+            OnEnterRegion(e.Region);
         }   
 
         void HandleRegionLeft (object sender, CLRegionEventArgs e)
         {
-            if (ExitBeaconRegion != null)
-            {
-                ExitBeaconRegion(RegionBeaconConverter.ConvertRegionToBeacon((CLBeaconRegion)e.Region));
-            }
+            Console.WriteLine("HandleRegionLeft");
+            OnExitRegion(e.Region);
         }
             
         public bool StartObserveBeacon(Beacon beacon)
         {
-            locationMgr.StartMonitoring(RegionBeaconConverter.ConvertBeaconToRegion(beacon));
+            locationManager.StartMonitoring(RegionBeaconConverter.ConvertBeaconToRegion(beacon));
             return true;
         }
 
         public void StopObserveBeacon(Beacon beacon)
         {
-            locationMgr.StopMonitoring(RegionBeaconConverter.ConvertBeaconToRegion(beacon));
+            locationManager.StopMonitoring(RegionBeaconConverter.ConvertBeaconToRegion(beacon));
         }
 
         public void InitiateFullStop()
         {
             //Nothing to do here on iOS...
+        }
+
+        void OnExitRegion(CLRegion region)
+        {
+            if (ExitBeaconRegion != null)
+            {
+                var beaconRegion = region as CLBeaconRegion;
+
+                if (beaconRegion != null)
+                    ExitBeaconRegion(RegionBeaconConverter.ConvertRegionToBeacon(beaconRegion));
+            }
+        }
+
+        void OnEnterRegion(CLRegion region)
+        {
+            if (EnterBeaconRegion != null)
+            {
+                var beaconRegion = region as CLBeaconRegion;
+
+                if (beaconRegion != null)
+                    EnterBeaconRegion(RegionBeaconConverter.ConvertRegionToBeacon(beaconRegion));
+            }
         }
     }
 
@@ -65,7 +104,13 @@ namespace BeaconTouch
 
         public static CLBeaconRegion ConvertBeaconToRegion(Beacon beacon)
         {
-            return new CLBeaconRegion(new NSUuid(beacon.UniqueId.ToString()), beacon.UniqueId.ToString());
+            var region = new CLBeaconRegion(new NSUuid(beacon.UniqueId.ToString()), beacon.UniqueId.ToString());
+
+            region.NotifyOnEntry = true;
+            region.NotifyOnExit = true;
+            region.NotifyEntryStateOnDisplay = true;
+
+            return region;
         }
     }
 }

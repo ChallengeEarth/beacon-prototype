@@ -1,15 +1,18 @@
 ﻿using System;
-using System.Drawing;
-using MonoTouch.Foundation;
 using MonoTouch.UIKit;
 using BeaconLibrary;
 using System.Collections.Generic;
+using BeaconLibrary;
 
 namespace BeaconTouch
 {
     public partial class InfoViewController : UIViewController
     {
         IndoorLocationController indoorLocationController;
+
+        public InfoViewController(IntPtr handle) : base (handle) 
+        {
+        }
 
         public InfoViewController() : base("InfoViewController", null)
         {
@@ -26,6 +29,7 @@ namespace BeaconTouch
             indoorLocationController.BeaconLost += HandleBeaconLost;
 
             var beacon1 = DummyBeaconCreator.CreateBeaconUrsin();
+//            var beacon2 = DummyBeaconCreator.CreateBeaconMarcel();
             indoorLocationController.AddBeaconsAndStart(new List<Beacon>{beacon1});
         }
 
@@ -42,8 +46,17 @@ namespace BeaconTouch
         void UpdateDisplay(string message, UIColor color)
         {
             InvokeOnMainThread(delegate {
+
+                string formatedMessage = String.Format("{0}: {1}",DateTime.Now.ToString("T"),message) + Environment.NewLine;
+
                 FullView.BackgroundColor = color;
-                InfoLabel.Text = message;
+
+                if(InfoText.Text.Equals("There aren't any iBeacons nearby"))
+                {
+                    InfoText.Text = string.Empty;
+                }
+
+                InfoText.Text += formatedMessage;
             });
         }
     }

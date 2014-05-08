@@ -5,11 +5,12 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
     <TextView
-        android:id="@+id/monkeyStatusLabel"
-        android:layout_width="match_parent"
+        android:id="@+id/logTextView"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
+        android:inputType="textMultiLine"
         android:textSize="20sp"
-        android:gravity="center"
-        android:text="There aren't any monkeys nearby" />
+        android:text="There aren't any iBeacons nearby"
+        android:layout_marginTop="33.5dp"
+        android:layout_marginLeft="18.5dp" />
 </RelativeLayout>
