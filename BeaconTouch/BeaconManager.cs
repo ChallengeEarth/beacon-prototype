@@ -22,6 +22,21 @@ namespace BeaconTouch
 
             locationManager.DidStartMonitoringForRegion += HandleDidStartMonitoringForRegion;
             locationManager.DidDetermineState += HandleDidDetermineState;
+
+
+            locationManager.MonitoringFailed += HandleMonitoringFailed;
+            locationManager.RangingBeaconsDidFailForRegion += HandleRangingBeaconsDidFailForRegion;
+        }
+            
+
+        void HandleRangingBeaconsDidFailForRegion (object sender, CLRegionBeaconsFailedEventArgs e)
+        {
+            Console.WriteLine("HandleRangingBeaconsDidFailForRegion");
+        }
+
+        void HandleMonitoringFailed (object sender, CLRegionErrorEventArgs e)
+        {
+            Console.WriteLine("HandleMonitoringFailed {0}",e.Error);
         }
 
         void HandleDidStartMonitoringForRegion (object sender, CLRegionEventArgs e)
@@ -59,6 +74,7 @@ namespace BeaconTouch
         public bool StartObserveBeacon(Beacon beacon)
         {
             locationManager.StartMonitoring(RegionBeaconConverter.ConvertBeaconToRegion(beacon));
+            locationManager.StartRangingBeacons(RegionBeaconConverter.ConvertBeaconToRegion(beacon));
             return true;
         }
 

@@ -1,6 +1,5 @@
 ﻿using System;
 using MonoTouch.UIKit;
-using BeaconLibrary;
 using System.Collections.Generic;
 using BeaconLibrary;
 
@@ -58,6 +57,11 @@ namespace BeaconTouch
 
                 InfoText.Text += formatedMessage;
             });
+        }
+
+        public override bool ShouldAutorotate()
+        {
+            return false;
         }
     }
 }
