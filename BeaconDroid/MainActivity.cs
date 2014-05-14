@@ -112,7 +112,7 @@ namespace FindTheMonkey.Droid
             var alarmSound = RingtoneManager.GetDefaultUri(RingtoneType.Notification);
 
             var builder = new NotificationCompat.Builder(this)
-                .SetSmallIcon(Resource.Drawable.Xamarin_Icon)
+                .SetSmallIcon(Resource.Drawable.Icon)
                 .SetContentTitle("Drallo Beacon Finder")
                 .SetContentText("A new Beacon-Event!")
                 .SetContentIntent(pendingIntent)
