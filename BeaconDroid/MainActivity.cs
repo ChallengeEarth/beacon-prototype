@@ -8,16 +8,27 @@ using Color = Android.Graphics.Color;
 using BeaconLibrary;
 using System.Collections.Generic;
 using Android.Bluetooth;
+using Android.Content;
+using Android.Support.V4.App;
+using Android.Media;
+using Android.Text.Method;
 
 namespace FindTheMonkey.Droid
 {
-    [Activity(Label = "DralloBeaconPrototype", MainLauncher = true, LaunchMode = LaunchMode.SingleTask)]
+    [Activity(Label = "Drallo Beacon Finder", 
+        MainLauncher = true, 
+        LaunchMode = LaunchMode.SingleTask,
+        ScreenOrientation = ScreenOrientation.Portrait)]
 	public class MainActivity : Activity
 	{
-		View _view;
+        private const string INITIAL_MESSAGE = "There aren't any Beacons nearby";
+
+        View _view;
 		TextView _text;
 
         IndoorLocationController indoorLocationController;
+
+        bool paused = false;
     
 		public MainActivity()
 		{
@@ -29,8 +40,10 @@ namespace FindTheMonkey.Droid
 
 			SetContentView(Resource.Layout.Main);
 
-			_view = FindViewById<RelativeLayout>(Resource.Id.findTheMonkeyView);
+            _view = FindViewById<LinearLayout>(Resource.Id.parentLayout);
             _text = FindViewById<TextView>(Resource.Id.logTextView);
+
+            UpdateDisplay(INITIAL_MESSAGE,Color.White);
 
             var beaconManager = new BeaconManager(this);
 
@@ -52,12 +65,22 @@ namespace FindTheMonkey.Droid
 
         void HandleBeaconFound (Beacon beacon)
         {
-            UpdateDisplay(String.Format("Beacon with ID {0} found!",beacon.UniqueId), Color.Blue);
+            if (paused)
+            {
+                ShowNotification();
+            }
+
+            UpdateDisplay(String.Format("Beacon with ID {0} found!",beacon.UniqueId), Color.Green);
         }
 
         void HandleBeaconLost (Beacon beacon)
         {
-            UpdateDisplay(String.Format("Beacon with ID {0} lost!",beacon.UniqueId), Color.Beige);  
+            if (paused)
+            {
+                ShowNotification();
+            }
+
+            UpdateDisplay(String.Format("Beacon with ID {0} lost!",beacon.UniqueId), Color.Red);  
         }
 
 
@@ -65,9 +88,9 @@ namespace FindTheMonkey.Droid
 		{
 			RunOnUiThread(() =>
 			{
-                string formatedMessage = String.Format("{0}: {1}",DateTime.Now.ToString("T"),message) + System.Environment.NewLine;
+                string formatedMessage = String.Format("{0}: {1}",DateTime.Now.ToString("T"),message) + System.Environment.NewLine + System.Environment.NewLine;
 
-                if(_text.Text.Equals("There aren't any iBeacons nearby"))
+                if(_text.Text.Equals(INITIAL_MESSAGE))
                 {
                     _text.Text = string.Empty;
                 }
@@ -78,6 +101,41 @@ namespace FindTheMonkey.Droid
 			});
 		}
 
+        private void ShowNotification()
+        {
+            int requestId = DateTime.Now.Millisecond;
+          
+            var resultIntent = new Intent(this, typeof(MainActivity));
+            resultIntent.AddFlags(ActivityFlags.ReorderToFront);
+            var pendingIntent = PendingIntent.GetActivity(this, requestId, resultIntent, PendingIntentFlags.UpdateCurrent);
+            var notificationId = Resource.String.monkey_notification;
+            var alarmSound = RingtoneManager.GetDefaultUri(RingtoneType.Notification);
+
+            var builder = new NotificationCompat.Builder(this)
+                .SetSmallIcon(Resource.Drawable.Xamarin_Icon)
+                .SetContentTitle("Drallo Beacon Finder")
+                .SetContentText("A new Beacon-Event!")
+                .SetContentIntent(pendingIntent)
+                .SetSound(alarmSound)
+                .SetAutoCancel(true);
+
+            var notification = builder.Build();
+
+            var notificationManager = (NotificationManager)GetSystemService(NotificationService);
+            notificationManager.Notify(notificationId, notification);
+        }
+
+        protected override void OnStop()
+        {
+            base.OnStop();
+            paused = true;
+        }
+
+        protected override void OnResume()
+        {
+            base.OnResume();
+            paused = false;
+        }
 
 		protected override void OnDestroy()
 		{

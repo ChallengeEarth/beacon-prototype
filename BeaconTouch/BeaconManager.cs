@@ -11,32 +11,25 @@ namespace BeaconTouch
 
         public event Action<Beacon> ExitBeaconRegion;
 
+        public event Action<string> DebugInfo;
+
         CLLocationManager locationManager;
 
         public BeaconManager()
         {
             locationManager = new CLLocationManager ();
 
-            locationManager.RegionEntered += HandleRegionEntered;
-            locationManager.RegionLeft += HandleRegionLeft;
-
             locationManager.DidStartMonitoringForRegion += HandleDidStartMonitoringForRegion;
             locationManager.DidDetermineState += HandleDidDetermineState;
 
 
             locationManager.MonitoringFailed += HandleMonitoringFailed;
-            locationManager.RangingBeaconsDidFailForRegion += HandleRangingBeaconsDidFailForRegion;
         }
-            
 
-        void HandleRangingBeaconsDidFailForRegion (object sender, CLRegionBeaconsFailedEventArgs e)
-        {
-            Console.WriteLine("HandleRangingBeaconsDidFailForRegion");
-        }
 
         void HandleMonitoringFailed (object sender, CLRegionErrorEventArgs e)
         {
-            Console.WriteLine("HandleMonitoringFailed {0}",e.Error);
+            OnDebugInfo(String.Format("HandleMonitoringFailed {0}",e.Error));
         }
 
         void HandleDidStartMonitoringForRegion (object sender, CLRegionEventArgs e)
@@ -46,7 +39,7 @@ namespace BeaconTouch
 
         void HandleDidDetermineState (object sender, CLRegionStateDeterminedEventArgs e)
         {
-            Console.WriteLine("State for region {0} is {1}", e.Region.Identifier, e.State);
+            OnDebugInfo(String.Format("State for region {0} is {1}", e.Region.Identifier, e.State));
 
             if (e.State == CLRegionState.Inside)
             {
@@ -58,23 +51,10 @@ namespace BeaconTouch
                 OnExitRegion(e.Region);
             }
         }
-
-        void HandleRegionEntered (object sender, CLRegionEventArgs e)
-        {
-            Console.WriteLine("HandleRegionEntered");
-            OnEnterRegion(e.Region);
-        }   
-
-        void HandleRegionLeft (object sender, CLRegionEventArgs e)
-        {
-            Console.WriteLine("HandleRegionLeft");
-            OnExitRegion(e.Region);
-        }
             
         public bool StartObserveBeacon(Beacon beacon)
         {
             locationManager.StartMonitoring(RegionBeaconConverter.ConvertBeaconToRegion(beacon));
-            locationManager.StartRangingBeacons(RegionBeaconConverter.ConvertBeaconToRegion(beacon));
             return true;
         }
 
@@ -96,6 +76,8 @@ namespace BeaconTouch
 
                 if (beaconRegion != null)
                     ExitBeaconRegion(RegionBeaconConverter.ConvertRegionToBeacon(beaconRegion));
+                else
+                    throw new FormatException("Beacon has wrong format!");
             }
         }
 
@@ -107,6 +89,16 @@ namespace BeaconTouch
 
                 if (beaconRegion != null)
                     EnterBeaconRegion(RegionBeaconConverter.ConvertRegionToBeacon(beaconRegion));
+                else
+                    throw new FormatException("Beacon has wrong format!");
+            }
+        }
+
+        void OnDebugInfo(String info)
+        {
+            if (EnterBeaconRegion != null)
+            {
+                DebugInfo(info);
             }
         }
     }

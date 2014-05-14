@@ -12,6 +12,8 @@ namespace FindTheMonkey.Droid
 
         public event Action<Beacon> ExitBeaconRegion;
 
+        public event Action<string> DebugInfo;
+
         IBeaconManager beaconManager;
 
         readonly Activity activity;

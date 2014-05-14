@@ -26,20 +26,26 @@ namespace BeaconTouch
             indoorLocationController = new IndoorLocationController(beaconManager);
             indoorLocationController.BeaconFound += HandleBeaconFound;
             indoorLocationController.BeaconLost += HandleBeaconLost;
-
+            indoorLocationController.DebugInfo += HandleDebugInfo;
+          
             var beacon1 = DummyBeaconCreator.CreateBeaconUrsin();
 //            var beacon2 = DummyBeaconCreator.CreateBeaconMarcel();
             indoorLocationController.AddBeaconsAndStart(new List<Beacon>{beacon1});
         }
 
+        void HandleDebugInfo (string message)
+        {
+            UpdateDisplay(message, UIColor.Brown);
+        }
+
         void HandleBeaconFound (Beacon beacon)
         {
-            UpdateDisplay(String.Format("Beacon with ID {0} found!",beacon.UniqueId), UIColor.Blue);
+            UpdateDisplay(String.Format("Beacon with ID {0} found!",beacon.UniqueId), UIColor.Green);
         }
 
         void HandleBeaconLost (Beacon beacon)
         {
-            UpdateDisplay(String.Format("Beacon with ID {0} lost!",beacon.UniqueId), UIColor.DarkGray);
+            UpdateDisplay(String.Format("Beacon with ID {0} lost!",beacon.UniqueId), UIColor.Red);
         }
         
         void UpdateDisplay(string message, UIColor color)

@@ -11,6 +11,7 @@ namespace BeaconLibrary
 
         public event Action<Beacon> BeaconFound;
         public event Action<Beacon> BeaconLost;
+        public event Action<String> DebugInfo;
 
         public IndoorLocationController(IBeaconHandler beaconManager)
         {
@@ -19,6 +20,7 @@ namespace BeaconLibrary
 
             beaconManager.EnterBeaconRegion += HandleEnterBeaconRegion;
             beaconManager.ExitBeaconRegion += HandleExitBeaconRegion;
+            beaconManager.DebugInfo += HandleDebugInfo;
         }
 
         void HandleEnterBeaconRegion (Beacon beacon)
@@ -40,6 +42,15 @@ namespace BeaconLibrary
                 BeaconLost(beacon);
             }
         }
+
+        void HandleDebugInfo (string message)
+        {
+            if (DebugInfo != null)
+            {
+                DebugInfo(message);
+            }
+        }
+
             
         public void AddBeaconsAndStart(List<Beacon> newBeacons)
         {
