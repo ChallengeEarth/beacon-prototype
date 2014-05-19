@@ -28,13 +28,17 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>CFBundleDisplayName</key>
-	<string>DralloBeaconPrototype</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>location</string>
 		<string>bluetooth-central</string>
 		<string>bluetooth-peripheral</string>
 	</array>
+	<key>CFBundleIconFiles</key>
+	<array>
+		<string>Icon-60@2x</string>
+	</array>
+	<key>CFBundleDisplayName</key>
+	<string>Beacon Finder</string>
 </dict>
 </plist>

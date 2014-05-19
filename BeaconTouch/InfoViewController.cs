@@ -28,14 +28,14 @@ namespace BeaconTouch
             indoorLocationController.BeaconLost += HandleBeaconLost;
             indoorLocationController.DebugInfo += HandleDebugInfo;
           
-            var beacon1 = DummyBeaconCreator.CreateBeaconUrsin();
-//            var beacon2 = DummyBeaconCreator.CreateBeaconMarcel();
-            indoorLocationController.AddBeaconsAndStart(new List<Beacon>{beacon1});
+//            var beacon1 = DummyBeaconCreator.CreateBeaconUrsin();
+            var beacon2 = DummyBeaconCreator.CreateBeaconMarcel();
+            indoorLocationController.AddBeaconsAndStart(new List<Beacon>(){beacon2});
         }
 
         void HandleDebugInfo (string message)
         {
-            UpdateDisplay(message, UIColor.Brown);
+            UpdateDisplay(message, UIColor.Orange);
         }
 
         void HandleBeaconFound (Beacon beacon)
@@ -50,11 +50,13 @@ namespace BeaconTouch
         
         void UpdateDisplay(string message, UIColor color)
         {
+            UIApplication.SharedApplication.PresentLocationNotificationNow(CreateNotification());
+
             InvokeOnMainThread(delegate {
 
-                string formatedMessage = String.Format("{0}: {1}",DateTime.Now.ToString("T"),message) + Environment.NewLine;
+                string formatedMessage = String.Format("{0}: {1}",DateTime.Now.ToString("T"),message) + Environment.NewLine + Environment.NewLine;
 
-                FullView.BackgroundColor = color;
+                InfoText.BackgroundColor = color;
 
                 if(InfoText.Text.Equals("There aren't any iBeacons nearby"))
                 {
@@ -68,6 +70,14 @@ namespace BeaconTouch
         public override bool ShouldAutorotate()
         {
             return false;
+        }
+
+        static UILocalNotification CreateNotification()
+        {
+            UILocalNotification notification = new UILocalNotification() {
+                AlertBody = "New iBeacon event"
+            };
+            return notification;
         }
     }
 }

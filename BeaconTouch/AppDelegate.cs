@@ -37,6 +37,14 @@ namespace BeaconTouch
         public override void WillTerminate(UIApplication application)
         {
         }
+
+        public override void ReceivedLocalNotification(UIApplication application, UILocalNotification notification)
+        {
+            // Check if the application is in foreground, we do nothing
+            if(application.ApplicationState == UIApplicationState.Active)
+            {
+            }
+        }
     }
 }
 
