@@ -112,4 +112,6 @@ UpgradeLog*.XML
 .DS_Store
 
 Testing/test-results/
-Components/**/samples/**
+
+# We don't add Components, because they are auto-downloaded by xamarin-studio
+Components

@@ -46,10 +46,10 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="Mono.Android" />
-    <Reference Include="Android-iBeacon-Service">
-      <HintPath>..\Components\xamarin-android-ibeacon-service-1.2\lib\android\Android-iBeacon-Service.dll</HintPath>
-    </Reference>
     <Reference Include="Mono.Android.Support.v4" />
+    <Reference Include="Android-iBeacon-Service">
+      <HintPath>..\Components\xamarin-android-ibeacon-service-1.3\lib\android\Android-iBeacon-Service.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MainActivity.cs" />
@@ -81,7 +81,7 @@
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="xamarin-android-ibeacon-service">
-      <Version>1.2</Version>
+      <Version>1.3</Version>
       <Visible>False</Visible>
     </XamarinComponentReference>
   </ItemGroup>
